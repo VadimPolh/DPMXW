@@ -6,15 +6,11 @@ services:
     container_name: mariadb
     ports:
       - "3306:3306"
-    command: --max_allowed_packet=1073741824 --sql_mode="STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"
+    command: --max_allowed_packet=1073741824
     environment:
-      MARIADB_DATABASE: "wordpress"
-      MARIADB_USER: "wp"
-      MARIADB_PASSWORD: "secret"
-      MARIADB_ROOT_PASSWORD: "secret"
+      MYSQL_ROOT_PASSWORD: secret
     volumes:
       - ./configs/db/:/docker-entrypoint-initdb.d
-      - db-data:/var/lib/mysql
 
   adminer:
     image: adminer

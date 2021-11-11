@@ -1,4 +1,4 @@
-FROM php:7.4-apache
+FROM wordpress:5.8.1-php7.4-apache
 COPY ./local/php.ini /usr/local/etc/php/php.ini
 COPY ./xdebug-2.9.6 /app/xdebug
 RUN apt-get update && apt-get install -y \

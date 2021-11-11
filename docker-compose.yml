@@ -1,19 +1,29 @@
 version: "3"
 
 services:
-  mysql:
-    platform: linux/x86_64
-    image: mysql:5.7
-    container_name: mysqldb
+  mariadb:
+    image: mariadb:latest
+    container_name: mariadb
     ports:
       - "3306:3306"
     command: --max_allowed_packet=1073741824 --sql_mode="STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"
     environment:
-      MYSQL_ROOT_PASSWORD: 123
-      MYSQL_DATABASE: log
+      MARIADB_DATABASE: "wordpress"
+      MARIADB_USER: "wp"
+      MARIADB_PASSWORD: "secret"
+      MARIADB_ROOT_PASSWORD: "secret"
     volumes:
       - ./configs/db/:/docker-entrypoint-initdb.d
       - db-data:/var/lib/mysql
+
+  adminer:
+    image: adminer
+    restart: always
+    links:
+      - mariadb
+    ports:
+      - 8081:8080
+
   wordpress-app:
     build:
       ./configs/php/
@@ -27,8 +37,10 @@ services:
     volumes:
       - ./wordpress:/var/www/html # ссылка на локальную установку WP
       - /tmp/wp-errors.log:/tmp/wp-errors.log
+    links:
+      - mariadb
     depends_on:
-      - mysql
+      - mariadb
 
 volumes:
   db-data:
